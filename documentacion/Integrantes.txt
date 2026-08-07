@@ -1,0 +1,14 @@
+PROYECTO: SAM-Lang Studio - Compilador e intérprete de agentes con IA multimodelo
+CURSO: Compiladores
+GRUPO: A
+SEMESTRE: V
+DOCENTE: Ing. Víctor Bejar Gonzales
+UNIVERSIDAD: Universidad Nacional del Altiplano de Puno
+
+INTEGRANTES:
+- Blanca Rosario Llanos Ticona - Código: 240201
+- Gisela Rosaura Ramos Barrios - Código: 240173
+- Maricarmen Monroy Quispe - Código: 240304
+
+REPOSITORIO: https://github.com/MaricarmenMQ/Proyecto-Compiladores
+APLICACIÓN WEB: https://proyecto-compiladores-uf5n.onrender.com

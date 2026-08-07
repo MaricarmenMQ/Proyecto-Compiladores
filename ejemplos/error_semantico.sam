@@ -1,0 +1,4 @@
+agente Medico {
+    objetivo: "Ejemplo con error";
+    depende_de: [AgenteInexistente];
+}

@@ -1,0 +1,5 @@
+.env
+config/.env
+tmp/
+build/
+node_modules/

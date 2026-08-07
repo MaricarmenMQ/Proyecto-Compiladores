@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SAM-Lang Studio · IA Multimodelo</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="hero">
+    <div>
+      <p class="eyebrow">Compilador, intérprete y agentes con IA multimodelo</p>
+      <h1>SAM-Lang Studio</h1>
+      <p>Lexer, parser, AST, semántica, runtime, comunicación, TAC, optimización, SAM-VM e integración con Gemini, OpenAI, Claude, DeepSeek, Groq y Ollama.</p>
+    </div>
+    <div class="header-statuses">
+      <div class="status-card">
+        <span class="status-dot"></span>
+        <div><strong>Motor web listo</strong><small>HTML + CSS + JavaScript</small></div>
+      </div>
+      <div id="aiStatusCard" class="status-card ai-card offline">
+        <span class="status-dot ai-dot"></span>
+        <div><strong id="aiStatusText">Comprobando IA</strong><small id="aiStatusDetail">Espere...</small></div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="toolbar panel">
+      <div class="example-group">
+        <label for="ejemplo">Ejemplo</label>
+        <select id="ejemplo">
+          <option value="multimodelo">Agente multimodelo (herramienta IA)</option>
+          <option value="medico">Agente médico compatible con Gemini</option>
+          <option value="comunicacion">Comunicación multiagente</option>
+          <option value="asistente">Condicional y respuesta local</option>
+          <option value="error">Prueba de error semántico</option>
+        </select>
+        <button id="btnCargar" class="secondary">Cargar</button>
+      </div>
+      <div class="actions">
+        <button id="btnConfigurarIA" class="secondary">Configurar IA</button>
+        <button id="btnLimpiar" class="ghost">Limpiar salida</button>
+        <button id="btnEjecutar">Compilar y ejecutar</button>
+      </div>
+    </section>
+
+    <section class="workspace">
+      <article class="panel editor-panel">
+        <div class="panel-title">
+          <div><span class="step">Entrada</span><h2>Editor SAM-Lang</h2></div>
+          <span id="contador" class="counter">0 líneas</span>
+        </div>
+        <textarea id="codigo" spellcheck="false" aria-label="Código SAM-Lang"></textarea>
+      </article>
+
+      <article class="panel console-panel">
+        <div class="panel-title">
+          <div><span class="step">Ejecución</span><h2>Consola del compilador</h2></div>
+          <span id="estado" class="badge neutral">Sin ejecutar</span>
+        </div>
+        <pre id="resultado">Carga un ejemplo y presiona “Compilar y ejecutar”.</pre>
+      </article>
+    </section>
+
+    <section class="agent-panel panel">
+      <div class="panel-title">
+        <div><span class="step">Runtime</span><h2>Probar agente creado</h2></div>
+        <div class="agent-controls">
+          <span id="agentMode" class="badge neutral">Sin agente</span>
+          <select id="agenteSelect" disabled><option>No hay agentes</option></select>
+          <select id="providerRuntime" disabled aria-label="Proveedor de IA">
+            <option value="auto">Proveedor automático</option>
+          </select>
+        </div>
+      </div>
+      <div class="chat-row">
+        <input id="mensaje" type="text" placeholder="Escribe un mensaje para el agente" value="hola, ¿qué puedes hacer?" />
+        <button id="btnMensaje" class="secondary" disabled>Enviar mensaje</button>
+      </div>
+      <p class="runtime-note">Usa <code>herramientas: [ia];</code> para elegir cualquier proveedor configurado. También siguen funcionando <code>[gemini]</code>, <code>[openai]</code>, <code>[claude]</code>, <code>[deepseek]</code>, <code>[groq]</code> y <code>[ollama]</code>. Si una IA falla, puede probar otra configurada y finalmente conservar la respuesta local.</p>
+      <div class="reply-grid">
+        <div><h3>Respuesta</h3><div id="respuestaAgente" class="reply-box">Compila un programa válido para activar el agente.</div></div>
+        <div><h3>Traza de ejecución</h3><pre id="trazaAgente" class="trace-box">Sin traza.</pre></div>
+      </div>
+    </section>
+
+    <section class="panel details-panel">
+      <div class="tabs" role="tablist">
+        <button class="tab active" data-tab="tokens">Tokens</button>
+        <button class="tab" data-tab="ast">AST</button>
+        <button class="tab" data-tab="runtime">Runtime</button>
+        <button class="tab" data-tab="tac">TAC</button>
+        <button class="tab" data-tab="vm">SAM-VM</button>
+      </div>
+      <pre id="detalle">Los resultados detallados aparecerán aquí.</pre>
+    </section>
+  </main>
+
+  <dialog id="configAIDialog" class="config-dialog">
+    <form id="configAIForm" method="dialog">
+      <div class="dialog-title">
+        <div><span class="step">Configuración local</span><h2>Conectar proveedor de IA</h2></div>
+        <button id="btnCancelarIA" type="button" class="icon-button" aria-label="Cerrar">×</button>
+      </div>
+      <p>Las claves se envían únicamente a tu backend local y se guardan en <code>config/.env</code>. No se muestran nuevamente en la interfaz.</p>
+
+      <label for="configProvider">Proveedor</label>
+      <select id="configProvider" class="full-control">
+        <option value="gemini">Google Gemini</option>
+        <option value="openai">OpenAI</option>
+        <option value="anthropic">Anthropic Claude</option>
+        <option value="deepseek">DeepSeek</option>
+        <option value="groq">Groq</option>
+        <option value="ollama">Ollama local</option>
+      </select>
+
+      <div id="apiKeyGroup">
+        <label for="aiApiKey">Clave API</label>
+        <input id="aiApiKey" type="password" autocomplete="off" placeholder="Pega aquí la clave del proveedor" />
+        <small class="field-hint">Si este proveedor ya está configurado, puedes dejar la clave vacía para conservarla.</small>
+      </div>
+
+      <label for="aiModel">Modelo</label>
+      <input id="aiModel" type="text" autocomplete="off" />
+
+      <div id="ollamaUrlGroup" hidden>
+        <label for="ollamaUrl">URL de Ollama</label>
+        <input id="ollamaUrl" type="text" value="http://127.0.0.1:11434" />
+      </div>
+
+      <label class="check-row" for="aiFallback">
+        <input id="aiFallback" type="checkbox" checked />
+        <span>Usar otros proveedores configurados como respaldo si el preferido falla</span>
+      </label>
+
+      <div id="providerSummary" class="provider-summary"></div>
+      <p id="configMessage" class="config-message">Abre esta interfaz mediante ABRIR_WEB.bat para configurar proveedores.</p>
+      <div class="dialog-actions">
+        <button id="btnGuardarIA" type="submit">Guardar configuración</button>
+      </div>
+    </form>
+  </dialog>
+
+  <footer>
+    SAM-Lang Final · Proyecto académico de compiladores · IA multimodelo · 2026
+  </footer>
+
+  <script src="sam-lang.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

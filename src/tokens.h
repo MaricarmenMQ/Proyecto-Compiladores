@@ -1,0 +1,100 @@
+#ifndef TOKENS_H
+#define TOKENS_H
+
+#include <string>
+
+enum TokenTipo {
+    AGENTE = 0,
+    RUNTIME,
+    ALLAVE,
+    CLLAVE,
+
+    OBJETIVO,
+    INTELIGENCIA,
+    HERRAMIENTAS,
+    MEMORIA,
+    PERMISOS,
+    RESTRICCIONES,
+    DEPENDEDE,
+
+    FLUJO,
+    FLUJOD,
+    SI,
+    SINO,
+
+    IGUAL,
+    MAYOR,
+    MENOR,
+    FLECHA,
+    DOSPUNTOS,
+    COMA,
+    APARENTESIS,
+    CPARENTESIS,
+    ACORCHETE,
+    CCORCHETE,
+
+    PERSISTENTE,
+    COMPARTIDA,
+    SOLOECTURA,
+    ESCRITURA,
+    REQAPROBACION,
+    USAR,
+    LEER,
+    ENVIAR,
+
+    COORDINADOR,
+    MEMCOMP,
+    PERIODICIDAD,
+    TIEMPOREAL,
+    ADAPTABILIDAD,
+    POLITICAVAL,
+
+    VAR,
+    NUM,
+    CADENA,
+    BOOLEANO,
+
+    RECIBIR,
+    RESPONDER,
+    DIFUNDIR,
+    CONECTAR,
+    ESCUCHAR,
+    DELEGA,
+    COORDINA,
+    SUPERVISA,
+
+    PUNTOYCOMA,
+    MAYORIGUAL,
+    MENORIGUAL,
+    IGUALIGUAL,
+    DISTINTO,
+    MENOS,
+    NEGACION,
+
+    FIN,
+    TOKEN_ERROR,
+    TOKEN_COUNT
+};
+
+inline const char* nombreToken(int token) {
+    static const char* nombres[] = {
+        "AGENTE", "RUNTIME", "ALLAVE", "CLLAVE",
+        "OBJETIVO", "INTELIGENCIA", "HERRAMIENTAS", "MEMORIA",
+        "PERMISOS", "RESTRICCIONES", "DEPENDEDE", "FLUJO", "FLUJOD",
+        "SI", "SINO", "IGUAL", "MAYOR", "MENOR", "FLECHA",
+        "DOSPUNTOS", "COMA", "APARENTESIS", "CPARENTESIS",
+        "ACORCHETE", "CCORCHETE", "PERSISTENTE", "COMPARTIDA",
+        "SOLOECTURA", "ESCRITURA", "REQAPROBACION", "USAR", "LEER",
+        "ENVIAR", "COORDINADOR", "MEMCOMP", "PERIODICIDAD",
+        "TIEMPOREAL", "ADAPTABILIDAD", "POLITICAVAL", "VAR", "NUM",
+        "CADENA", "BOOLEANO", "RECIBIR", "RESPONDER",
+        "DIFUNDIR", "CONECTAR", "ESCUCHAR", "DELEGA", "COORDINA",
+        "SUPERVISA", "PUNTOYCOMA", "MAYORIGUAL", "MENORIGUAL",
+        "IGUALIGUAL", "DISTINTO", "MENOS", "NEGACION", "FIN",
+        "TOKEN_ERROR"
+    };
+    if (token < 0 || token >= TOKEN_COUNT) return "TOKEN_DESCONOCIDO";
+    return nombres[token];
+}
+
+#endif

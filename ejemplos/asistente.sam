@@ -1,0 +1,16 @@
+agente AsistenteGeneral {
+    objetivo: "Responder solicitudes generales del usuario";
+    inteligencia: basica;
+    memoria: solo_lectura;
+    herramientas: [busqueda_local];
+    permisos: [leer];
+
+    flujo saludo {
+        recibir mensaje;
+        si mensaje == "hola" {
+            responder "Hola, soy un agente SAM-Lang";
+        } sino {
+            responder "Solicitud recibida";
+        }
+    }
+}

@@ -1,0 +1,13 @@
+agente Medico {
+    objetivo: "Apoyar el triaje y la orientacion clinica inicial";
+    inteligencia: experto;
+    memoria: persistente;
+    herramientas: [gemini, base_clinica, guia_protocolos];
+    permisos: [leer, usar, enviar];
+    restricciones: [requiere_aprobacion];
+
+    flujo consulta {
+        recibir paciente;
+        responder "Registrar signos y sintomas";
+    }
+}

@@ -1,0 +1,27 @@
+SAM-LANG STUDIO v2 - INICIO RAPIDO
+==================================
+
+1. Instala Node.js 18 o superior.
+2. Ejecuta ABRIR_WEB.bat.
+3. La aplicación abre en http://127.0.0.1:3000
+4. Pulsa "Configurar IA".
+5. Elige un proveedor: Gemini, OpenAI, Anthropic Claude, DeepSeek, Groq u Ollama.
+6. Pega la clave API (Ollama local no necesita clave), indica el modelo y guarda.
+7. Carga "Agente multimodelo", pulsa "Compilar y ejecutar" y envía un mensaje.
+
+Sintaxis recomendada para un agente independiente del proveedor:
+    herramientas: [ia];
+
+Compatibilidad conservada:
+    herramientas: [gemini];
+    herramientas: [openai];
+    herramientas: [claude];
+    herramientas: [deepseek];
+    herramientas: [groq];
+    herramientas: [ollama];
+
+Si el proveedor preferido falla y el respaldo está activo, SAM-Lang prueba otros
+proveedores configurados. Si todos fallan, utiliza el runtime local de respaldo.
+
+IMPORTANTE: config/.env contiene claves privadas cuando configuras servicios.
+No lo publiques ni lo subas a repositorios.

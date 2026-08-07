@@ -1,0 +1,11 @@
+build
+node_modules
+tmp
+config/.env
+.env
+.git
+*.zip
+*.docx
+*.pdf
+evidencias
+respaldo_inicial

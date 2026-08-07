@@ -1,0 +1,186 @@
+=== NPM TEST ===
+
+> sam-lang-studio-multimodelo@2.0.0 test
+> node tests/test_web.js && node tests/test_gemini.js && node tests/test_ai.js
+
+[OK] medico.sam compila
+[OK] medico.sam genera tokens
+[OK] medico.sam genera AST
+[OK] medico.sam genera TAC
+[OK] medico.sam genera SAM-VM
+[OK] medico.sam ejecuta un agente
+[OK] comunicacion.sam compila
+[OK] comunicacion.sam genera tokens
+[OK] comunicacion.sam genera AST
+[OK] comunicacion.sam genera TAC
+[OK] comunicacion.sam genera SAM-VM
+[OK] comunicacion.sam ejecuta un agente
+[OK] asistente.sam compila
+[OK] asistente.sam genera tokens
+[OK] asistente.sam genera AST
+[OK] asistente.sam genera TAC
+[OK] asistente.sam genera SAM-VM
+[OK] asistente.sam ejecuta un agente
+[OK] error_semantico.sam es rechazado por semántica
+
+Todas las pruebas web finalizaron correctamente.
+[OK] el prompt incluye el nombre del agente
+[OK] el prompt médico incluye límites de seguridad
+[OK] el prompt incluye el mensaje del usuario
+[OK] se extrae texto de la respuesta Gemini
+[OK] se usa el endpoint generateContent
+[OK] la clave viaja en el encabezado y no en el navegador
+[OK] la solicitud contiene el contexto del agente
+[OK] el cliente devuelve la respuesta generada
+[OK] el cliente informa el modelo utilizado
+
+Pruebas Gemini finalizadas correctamente.
+[OK] la herramienta ia activa la capa multimodelo
+[OK] el alias claude activa la capa IA
+[OK] gemini conserva compatibilidad
+[OK] claude se mapea a Anthropic
+[OK] se extrae texto de OpenAI Responses API
+[OK] se extrae texto OpenAI-compatible
+[OK] se extrae texto Anthropic
+[OK] se selecciona proveedor activo
+[OK] OpenAI aparece configurado con clave
+[OK] Groq aparece configurado con clave
+[OK] Gemini queda pendiente sin clave
+[OK] OpenAI usa Responses API
+[OK] OpenAI usa Authorization Bearer
+[OK] OpenAI recibe el modelo configurado
+[OK] OpenAI recibe contexto del agente
+[OK] el manager usa OpenAI
+[OK] el manager devuelve la respuesta OpenAI
+[OK] no marca fallback cuando responde el preferido
+[OK] el fallback usa el modelo Groq configurado
+[OK] si OpenAI falla se usa otro proveedor configurado
+[OK] el manager informa que utilizó fallback
+[OK] la traza conserva el fallo del proveedor preferido
+[OK] Anthropic usa Messages API
+[OK] Anthropic usa x-api-key
+[OK] el cliente Anthropic devuelve texto
+[OK] DeepSeek usa chat/completions
+[OK] el cliente DeepSeek devuelve texto
+[OK] Ollama usa la API local /api/chat
+[OK] Ollama responde sin streaming para la interfaz
+[OK] el cliente Ollama devuelve texto
+
+Pruebas IA multimodelo finalizadas correctamente.
+
+
+=== CMAKE BUILD ===
+[  9%] Building CXX object CMakeFiles/sam_compilador.dir/src/main.cpp.o
+[ 18%] Building CXX object CMakeFiles/sam_compilador.dir/src/analisis.cpp.o
+[ 27%] Building CXX object CMakeFiles/sam_compilador.dir/src/parser.cpp.o
+[ 36%] Building CXX object CMakeFiles/sam_compilador.dir/src/tablas_transicion.cpp.o
+[ 45%] Building CXX object CMakeFiles/sam_compilador.dir/src/semantico.cpp.o
+[ 54%] Building CXX object CMakeFiles/sam_compilador.dir/src/comunicacion.cpp.o
+[ 63%] Building CXX object CMakeFiles/sam_compilador.dir/src/interprete.cpp.o
+[ 72%] Building CXX object CMakeFiles/sam_compilador.dir/src/tac.cpp.o
+[ 81%] Building CXX object CMakeFiles/sam_compilador.dir/src/optimizador.cpp.o
+[ 90%] Building CXX object CMakeFiles/sam_compilador.dir/src/generador_codigo.cpp.o
+[100%] Linking CXX executable sam_compilador
+[100%] Built target sam_compilador
+
+
+=== EJECUCION multimodelo.sam ===
+****************************************************************************
+SAM-LANG - COMPILADOR E INTERPRETE DE AGENTES
+Entrada: ejemplos/multimodelo.sam
+****************************************************************************
+
+[1] ANALISIS LEXICO (AFD)
+[OK] Secuencia de tokens valida.
+
+[2] VERIFICACION SINTACTICA POR PDA TABULAR
+[OK] El PDA acepta la secuencia de tokens.
+
+[3] PARSER DESCENDENTE RECURSIVO Y AST
+[OK] Sintaxis valida y AST construido.
+
+[4] ANALISIS SEMANTICO
+[OK] Analisis semantico correcto.
+     Agentes registrados: 1
+     Runtimes registrados: 0
+
+[5] RUNTIME SAM-LANG
+    Inicializando agentes declarados...
+    [AGENTE ACTIVO] AsistenteMultiIA | objetivo="Responder solicitudes generales usando el proveedor de IA seleccionado" | memoria=persistente
+      Ejecutando flujo: consulta
+        Paso: recibir
+        Paso: responder
+
+========== REPORTE RUNTIME ==========
+Agentes activos: 1
+- AsistenteMultiIA | objetivo: "Responder solicitudes generales usando el proveedor de IA seleccionado" | inteligencia: experto | memoria: persistente
+
+========== COMUNICACION ENTRE AGENTES ==========
+No se registraron mensajes entre agentes.
+
+[6] GENERACION DE CODIGO INTERMEDIO
+
+========== CODIGO INTERMEDIO TAC ==========
+PROGRAM_BEGIN SAM_LANG
+CREATE_AGENT AsistenteMultiIA
+SET_OBJECTIVE AsistenteMultiIA, "Responder solicitudes generales usando el proveedor de IA seleccionado"
+SET_INTELLIGENCE AsistenteMultiIA, experto
+SET_MEMORY AsistenteMultiIA, persistente
+ADD_TOOL AsistenteMultiIA, ia
+ADD_PERMISSION AsistenteMultiIA, leer
+ADD_PERMISSION AsistenteMultiIA, usar
+ADD_PERMISSION AsistenteMultiIA, enviar
+BEGIN_FLOW AsistenteMultiIA, consulta
+CALL AsistenteMultiIA, recibir -> T1
+ARGUMENTS T1, mensaje
+CALL AsistenteMultiIA, responder -> T2
+ARGUMENTS T2, "Solicitud recibida por SAM-Lang"
+END_FLOW AsistenteMultiIA, consulta
+PROGRAM_END SAM_LANG
+
+[7] OPTIMIZACION TAC
+
+========== OPTIMIZACION ==========
+Instrucciones originales: 16
+Instrucciones optimizadas: 14
+Reduccion: 2
+Tecnicas: fusion CALL+ARGUMENTS, eliminacion NOP y redundancias de configuracion.
+
+========== CODIGO INTERMEDIO TAC ==========
+PROGRAM_BEGIN SAM_LANG
+CREATE_AGENT AsistenteMultiIA
+SET_OBJECTIVE AsistenteMultiIA, "Responder solicitudes generales usando el proveedor de IA seleccionado"
+SET_INTELLIGENCE AsistenteMultiIA, experto
+SET_MEMORY AsistenteMultiIA, persistente
+ADD_TOOL AsistenteMultiIA, ia
+ADD_PERMISSION AsistenteMultiIA, leer
+ADD_PERMISSION AsistenteMultiIA, usar
+ADD_PERMISSION AsistenteMultiIA, enviar
+BEGIN_FLOW AsistenteMultiIA, consulta
+CALL AsistenteMultiIA, recibir mensaje -> T1
+CALL AsistenteMultiIA, responder "Solicitud recibida por SAM-Lang" -> T2
+END_FLOW AsistenteMultiIA, consulta
+PROGRAM_END SAM_LANG
+
+[8] GENERACION DE CODIGO FINAL SAM-VM
+; SAM-Lang Virtual Machine Code
+; Generado automaticamente por el compilador SAM-Lang
+
+.program SAM_LANG
+LOAD_AGENT AsistenteMultiIA
+SET_OBJECTIVE AsistenteMultiIA "Responder solicitudes generales usando el proveedor de IA seleccionado"
+SET_INTELLIGENCE AsistenteMultiIA experto
+SET_MEMORY AsistenteMultiIA persistente
+ADD_TOOL AsistenteMultiIA ia
+GRANT AsistenteMultiIA leer
+GRANT AsistenteMultiIA usar
+GRANT AsistenteMultiIA enviar
+BEGIN_FLOW AsistenteMultiIA.consulta
+EXECUTE AsistenteMultiIA.recibir mensaje -> T1
+EXECUTE AsistenteMultiIA.responder "Solicitud recibida por SAM-Lang" -> T2
+END_FLOW AsistenteMultiIA.consulta
+.end_program SAM_LANG
+HALT
+[OK] Codigo final guardado en: /mnt/data/sam_docs_v3_multimodelo.samvm
+
+Resultado final: compilacion y ejecucion completadas correctamente.

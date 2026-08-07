@@ -1,0 +1,33 @@
+agente Analista {
+    objetivo: "Analizar datos recibidos";
+    inteligencia: razonador;
+    memoria: compartida;
+    permisos: [leer, usar];
+
+    flujo analisis {
+        recibir datos;
+        responder "datos procesados";
+    }
+}
+
+agente Medico {
+    objetivo: "Tomar decisiones preliminares con apoyo del analista";
+    inteligencia: experto;
+    memoria: persistente;
+    depende_de: [Analista];
+    delega: evaluar -> Analista;
+
+    flujo diagnostico {
+        recibir paciente;
+        evaluar -> responder "recomendacion generada";
+    }
+}
+
+runtime HospitalRuntime {
+    coordinador: Medico;
+    depende_de: [Analista];
+    memoria_compartida: true;
+    periodicidad: tiempo_real;
+    adaptabilidad: supervisada;
+    politica_validacion: requiere_aprobacion;
+}

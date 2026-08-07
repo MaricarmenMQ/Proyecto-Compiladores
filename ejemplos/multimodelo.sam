@@ -1,0 +1,12 @@
+agente AsistenteMultiIA {
+    objetivo: "Responder solicitudes generales usando el proveedor de IA seleccionado";
+    inteligencia: experto;
+    memoria: persistente;
+    herramientas: [ia];
+    permisos: [leer, usar, enviar];
+
+    flujo consulta {
+        recibir mensaje;
+        responder "Solicitud recibida por SAM-Lang";
+    }
+}

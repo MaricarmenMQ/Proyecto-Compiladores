@@ -1,0 +1,14 @@
+{
+  "name": "sam-lang-studio-multimodelo",
+  "version": "2.0.0",
+  "private": true,
+  "description": "SAM-Lang Studio: compilador e interprete de agentes con capa IA multimodelo",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node backend/server.js",
+    "server": "node backend/server.js",
+    "test": "node tests/test_web.js && node tests/test_gemini.js && node tests/test_ai.js"
+  }
+}

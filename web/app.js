@@ -78,6 +78,371 @@ runtime HospitalRuntime {
   error: `agente Medico {
     objetivo: "Ejemplo con error";
     depende_de: [AgenteInexistente];
+}`,
+  agricultura: `agente MonitorCultivo {
+    objetivo: "Supervisar humedad y temperatura de los cultivos mediante sensores";
+    inteligencia: basica;
+    memoria: compartida;
+    herramientas: [sensores_iot];
+    permisos: [leer, usar];
+    conectar: red_sensores;
+
+    flujo revisar_humedad {
+        recibir humedad;
+        si humedad < 30 {
+            responder "Se activa el sistema de riego";
+        } sino {
+            responder "Nivel de humedad adecuado";
+        }
+    }
+}
+
+runtime AgroRuntime {
+    coordinador: MonitorCultivo;
+    memoria_compartida: true;
+    periodicidad: 15;
+    adaptabilidad: autonoma;
+    politica_validacion: requiere_aprobacion;
+}`,
+  asesor_legal: `agente AsesorLegal {
+    objetivo: "Orientar consultas legales basicas de los usuarios";
+    inteligencia: experto;
+    memoria: compartida;
+    herramientas: [base_normativa, buscador_jurisprudencia];
+    permisos: [leer, usar];
+    restricciones: [requiere_aprobacion, confidencialidad];
+
+    flujo evaluar_caso {
+        recibir prioridad;
+        si prioridad >= 8 {
+            responder "Caso urgente, se deriva a un abogado humano";
+        } sino {
+            responder "Caso registrado para revision estandar";
+        }
+    }
+}`,
+  atencion_cliente: `agente SoporteCliente {
+    objetivo: "Atender consultas de clientes por canal de chat";
+    inteligencia: basica;
+    memoria: solo_lectura;
+    herramientas: [chat_en_vivo];
+    permisos: [leer, enviar];
+    conectar: canal_chat;
+    escuchar: eventos_cliente;
+
+    flujo bienvenida {
+        recibir mensaje;
+        si mensaje == "ayuda" {
+            responder "Cuentame en que puedo ayudarte";
+        } sino {
+            difundir mensaje;
+            responder "Gracias por escribirnos";
+        }
+    }
+}`,
+  comercio: `agente RecomendadorTienda {
+    objetivo: "Sugerir productos personalizados en la tienda en linea";
+    inteligencia: razonador;
+    memoria: persistente;
+    herramientas: [ia, catalogo_productos];
+    permisos: [leer, usar, enviar];
+
+    flujo_dinamico sugerir_producto {
+        recibir historial;
+        si historial == "vacio" {
+            responder "Se muestran los productos mas populares";
+        } sino {
+            responder "Se generan recomendaciones personalizadas";
+        }
+    }
+
+    flujo confirmar_compra {
+        recibir monto;
+        si monto > 100 {
+            responder "Se aplica envio gratuito";
+        } sino {
+            responder "Se calcula el costo de envio estandar";
+        }
+    }
+}`,
+  finanzas: `agente ValidadorRiesgo {
+    objetivo: "Calcular el nivel de riesgo de una solicitud financiera";
+    inteligencia: razonador;
+    memoria: compartida;
+    permisos: [leer, usar];
+
+    flujo calcular {
+        recibir monto;
+        responder "riesgo calculado";
+    }
+}
+
+agente AsesorFinanciero {
+    objetivo: "Recomendar productos financieros segun el perfil del cliente";
+    inteligencia: experto;
+    memoria: persistente;
+    herramientas: [ia, base_productos];
+    permisos: [leer, usar, enviar];
+    depende_de: [ValidadorRiesgo];
+    delega: verificar -> ValidadorRiesgo;
+
+    flujo recomendar {
+        recibir cliente;
+        verificar -> responder "recomendacion financiera generada";
+    }
+}
+
+runtime BancaRuntime {
+    coordinador: AsesorFinanciero;
+    depende_de: [ValidadorRiesgo];
+    memoria_compartida: true;
+    periodicidad: tiempo_real;
+    adaptabilidad: supervisada;
+    politica_validacion: requiere_aprobacion;
+}`,
+  investigacion: `agente RecolectorDatos {
+    objetivo: "Recolectar y organizar fuentes academicas relevantes";
+    inteligencia: basica;
+    memoria: compartida;
+    herramientas: [buscador_academico];
+    permisos: [leer, usar];
+
+    flujo recolectar {
+        recibir tema;
+        responder "fuentes recolectadas";
+    }
+}
+
+agente AnalistaInvestigacion {
+    objetivo: "Sintetizar hallazgos y proponer conclusiones preliminares";
+    inteligencia: experto;
+    memoria: persistente;
+    herramientas: [ia];
+    permisos: [leer, usar, enviar];
+    depende_de: [RecolectorDatos];
+    delega: recolectar_fuentes -> RecolectorDatos;
+
+    flujo sintetizar {
+        recibir tema;
+        recolectar_fuentes -> responder "sintesis generada";
+    }
+}
+
+runtime LaboratorioRuntime {
+    coordinador: AnalistaInvestigacion;
+    depende_de: [RecolectorDatos];
+    memoria_compartida: false;
+    periodicidad: 60;
+    adaptabilidad: supervisada;
+    politica_validacion: requiere_aprobacion;
+}`,
+  logistica: `agente RepartidorVirtual {
+    objetivo: "Actualizar el estado de los pedidos en ruta";
+    inteligencia: basica;
+    memoria: compartida;
+    permisos: [leer, usar];
+
+    flujo actualizar_estado {
+        recibir pedido;
+        responder "estado de pedido actualizado";
+    }
+}
+
+agente Almacenista {
+    objetivo: "Gestionar el inventario y preparar los pedidos";
+    inteligencia: razonador;
+    memoria: persistente;
+    permisos: [leer, usar];
+
+    flujo preparar_pedido {
+        recibir pedido;
+        responder "pedido preparado";
+    }
+}
+
+agente SupervisorLogistico {
+    objetivo: "Coordinar y supervisar la cadena de despacho";
+    inteligencia: experto;
+    memoria: persistente;
+    depende_de: [Almacenista, RepartidorVirtual];
+    coordina: [Almacenista];
+    supervisa: [RepartidorVirtual];
+
+    flujo verificar_cadena {
+        recibir pedido;
+        si pedido == "retrasado" {
+            responder "Se notifica retraso al cliente";
+        } sino {
+            responder "Cadena logistica dentro de lo esperado";
+        }
+    }
+}
+
+runtime LogisticaRuntime {
+    coordinador: SupervisorLogistico;
+    depende_de: [Almacenista, RepartidorVirtual];
+    memoria_compartida: true;
+    periodicidad: 30;
+    adaptabilidad: autonoma;
+    politica_validacion: requiere_aprobacion;
+}`,
+  marketing: `agente GestorCampanas {
+    objetivo: "Planificar y difundir campanas de marketing digital";
+    inteligencia: razonador;
+    memoria: compartida;
+    herramientas: [ia, redes_sociales];
+    permisos: [leer, usar, enviar];
+    restricciones: [requiere_aprobacion, presupuesto_limitado];
+
+    flujo lanzar_campana {
+        recibir audiencia;
+        difundir audiencia -> responder "Campana difundida correctamente";
+    }
+
+    flujo evaluar_resultado {
+        recibir conversion;
+        si conversion >= 5 {
+            responder "Campana exitosa, se recomienda escalar presupuesto";
+        } sino {
+            responder "Se ajustan segmentos de audiencia";
+        }
+    }
+}`,
+  recursos_humanos: `agente ReclutadorIA {
+    objetivo: "Filtrar candidatos segun los requisitos del puesto";
+    inteligencia: razonador;
+    memoria: persistente;
+    herramientas: [ia, base_curriculums];
+    permisos: [leer, usar, escritura];
+    restricciones: [requiere_aprobacion];
+
+    flujo filtrar_candidato {
+        recibir experiencia;
+        si experiencia >= 3 {
+            responder "Candidato preseleccionado para entrevista";
+        } sino {
+            responder "Candidato queda en banco de talento";
+        }
+    }
+
+    flujo agendar_entrevista {
+        recibir disponibilidad;
+        responder "Entrevista agendada";
+    }
+}`,
+  robotica: `agente RobotTransportador {
+    objetivo: "Trasladar piezas entre estaciones de la planta";
+    inteligencia: basica;
+    memoria: solo_lectura;
+    permisos: [leer, usar];
+
+    flujo trasladar {
+        recibir estacion;
+        responder "pieza trasladada";
+    }
+}
+
+agente RobotEnsamblador {
+    objetivo: "Ensamblar componentes segun la orden de produccion";
+    inteligencia: razonador;
+    memoria: compartida;
+    permisos: [leer, usar];
+
+    flujo ensamblar {
+        recibir orden;
+        responder "componente ensamblado";
+    }
+}
+
+agente ControladorPlanta {
+    objetivo: "Coordinar y supervisar la operacion de la flota de robots";
+    inteligencia: experto;
+    memoria: persistente;
+    depende_de: [RobotTransportador, RobotEnsamblador];
+    coordina: [RobotTransportador];
+    supervisa: [RobotEnsamblador];
+    restricciones: requiere_aprobacion;
+
+    flujo monitorear_planta {
+        recibir alerta;
+        si alerta == "falla" {
+            responder "Se detiene la linea de produccion";
+        } sino {
+            responder "Produccion operando con normalidad";
+        }
+    }
+}
+
+runtime PlantaRuntime {
+    coordinador: ControladorPlanta;
+    depende_de: [RobotTransportador, RobotEnsamblador];
+    memoria_compartida: true;
+    periodicidad: tiempo_real;
+    adaptabilidad: supervisada;
+    politica_validacion: requiere_aprobacion;
+}`,
+  seguridad: `agente MonitorSeguridad {
+    objetivo: "Vigilar el trafico de red en busca de actividad sospechosa";
+    inteligencia: experto;
+    memoria: persistente;
+    herramientas: [firewall, analizador_trafico];
+    permisos: [leer, usar, enviar];
+    restricciones: [requiere_aprobacion];
+
+    flujo_dinamico analizar_evento {
+        recibir alerta;
+        si alerta == true {
+            responder "Se activa protocolo de contencion";
+        } sino {
+            responder "Evento registrado sin acciones adicionales";
+        }
+    }
+
+    flujo revisar_acceso {
+        recibir autorizado;
+        si autorizado == false {
+            responder "Acceso denegado y reportado";
+        } sino {
+            responder "Acceso permitido";
+        }
+    }
+}`,
+  soporte_ti: `agente MesaAyudaTI {
+    objetivo: "Clasificar y resolver incidencias tecnicas reportadas";
+    inteligencia: basica;
+    memoria: solo_lectura;
+    herramientas: [base_conocimiento];
+    permisos: [leer, usar];
+
+    flujo clasificar_ticket {
+        recibir severidad;
+        si severidad == "critica" {
+            responder "Se escala a soporte de nivel 2";
+        } sino si severidad != "baja" {
+            responder "Se atiende en cola prioritaria";
+        } sino {
+            responder "Se atiende en cola estandar";
+        }
+    }
+}`,
+  tutor_educativo: `agente TutorMatematicas {
+    objetivo: "Ayudar a estudiantes a resolver ejercicios de matematica basica";
+    inteligencia: razonador;
+    memoria: persistente;
+    herramientas: [calculadora, banco_ejercicios];
+    permisos: [leer, usar, enviar];
+    restricciones: [requiere_aprobacion];
+
+    flujo_dinamico revisar_respuesta {
+        recibir respuesta;
+        si respuesta == "correcta" {
+            responder "Muy bien, avancemos al siguiente ejercicio";
+        } sino si respuesta == "vacia" {
+            responder "No recibi una respuesta, intenta de nuevo";
+        } sino {
+            responder "Revisemos juntos el procedimiento";
+        }
+    }
 }`
 };
 

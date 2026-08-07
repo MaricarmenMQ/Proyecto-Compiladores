@@ -1,0 +1,18 @@
+SAM-LANG STUDIO v2.0.0 — ENTREGA DOCUMENTAL FINAL
+
+Contenido:
+1. Manual de usuario completo (.docx)
+2. Memoria descriptiva completa (.docx)
+3. Documentación/inventario del código fuente (.docx)
+4. Código fuente completo, limpio de credenciales (.zip)
+5. Manual técnico completo (.docx)
+6. HASHES_SHA256.txt para verificación de integridad
+
+Pendientes que requieren datos del equipo:
+- Nombre de la institución
+- Docente
+- Integrantes y códigos
+- Ciudad
+- URL pública final, una vez desplegado el proyecto
+
+No se incluyen claves API reales en el código fuente de entrega.

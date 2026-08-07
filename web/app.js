@@ -464,6 +464,37 @@ const DEFAULT_MODELS = {
   ollama: 'gemma3'
 };
 
+const MODELS_BY_PROVIDER = {
+  gemini: [
+    { label: 'Gemini 3.6 Flash (recomendado)', value: 'gemini-3.6-flash' },
+    { label: 'Gemini 3.5 Flash Lite', value: 'gemini-3.5-flash-lite' },
+    { label: 'Gemini 2.5 Flash', value: 'gemini-2.5-flash' }
+  ],
+  openai: [
+    { label: 'GPT-5 Mini (recomendado)', value: 'gpt-5-mini' },
+    { label: 'GPT-4o', value: 'gpt-4o' },
+    { label: 'GPT-4 Turbo', value: 'gpt-4-turbo' }
+  ],
+  anthropic: [
+    { label: 'Claude Sonnet 4 (recomendado)', value: 'claude-sonnet-4-20250514' },
+    { label: 'Claude Opus', value: 'claude-opus-4-1' },
+    { label: 'Claude Haiku', value: 'claude-haiku-3-5' }
+  ],
+  deepseek: [
+    { label: 'DeepSeek Chat (recomendado)', value: 'deepseek-chat' },
+    { label: 'DeepSeek v4 Flash', value: 'deepseek-v4-flash' }
+  ],
+  groq: [
+    { label: 'Llama 3.3 70B (recomendado)', value: 'llama-3.3-70b-versatile' },
+    { label: 'Mixtral 8x7b', value: 'mixtral-8x7b-32768' }
+  ],
+  ollama: [
+    { label: 'Gemma3 (recomendado)', value: 'gemma3' },
+    { label: 'Llama2', value: 'llama2' },
+    { label: 'Mistral', value: 'mistral' }
+  ]
+};
+
 const AI_TOOL_MAP = {
   gemini: 'gemini', google: 'gemini',
   openai: 'openai', gpt: 'openai',
@@ -818,8 +849,12 @@ function currentConfigProvider() {
 function updateConfigFields() {
   const provider = $('configProvider').value;
   const info = providerInfo(provider);
-  $('aiModel').value = info?.model || DEFAULT_MODELS[provider] || '';
-  $('aiApiKey').value = '';
+  const modelSelect = $('aiModel');
+  const models = MODELS_BY_PROVIDER[provider] || [];
+  
+  modelSelect.innerHTML = models.map(m => `<option value="${m.value}">${m.label}</option>`).join('');
+  modelSelect.value = info?.model || DEFAULT_MODELS[provider] || '';
+  
   $('apiKeyGroup').hidden = provider === 'ollama';
   $('ollamaUrlGroup').hidden = provider !== 'ollama';
   if (provider === 'ollama') $('ollamaUrl').value = info?.baseUrl || 'http://127.0.0.1:11434';
